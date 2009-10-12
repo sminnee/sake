@@ -106,7 +106,33 @@ What this will actually do is execute the `.sake/post-deploy.cmd.php` script.  H
 	sake('dev/buildcache');
 
 Sake will create an initial `post-deploy` script for you when creating a project.  It is designed to be called after checking the site code out into a new location to get the site to an executable state.  This can be hooked into a git `post-update` or `post-receive` hook.  It is also called by the module manager.
-	
+
+### Writing build scripts
+
+Before executing, all of the following include files will be included.  You can define any methods in these as you see fit:
+
+* File: `$PROJECTROOT/.sake/*.inc`
+* File: `~/.sake/*.inc`
+
+When you call `sake my/action/name`, it will then look for one of the following, in this order:
+
+ * File: `$PROJECTROOT/.sake/my_action_name.cmd.php`
+ * File: `~/.sake/my_action_name.cmd.php`
+ * Method: `sake_my_action_name()`
+
+It will either include the file it finds, or execute the method.
+
+These build scripts can make use of the following built-in methods:
+
+ * `svnModule($name, $url)`: Check out or update a module out from svn as appropriate.
+ * `gitModule($name, $url)`: Check out or update a module out from git as appropriate.
+ * `sake($sakeURL, $args = array())`: Execute another sake command.
+ * `sapphire($sapphireURL, $args = array())`: Execute a sapphire command.  Ordinarily, this would do the same as `sake()`; however, if a sake action has been overwritten then this will go straight to the sapphrie URL.  This can be handy, for example, if you create `.sake/dev_build.cmd.php`, containing the following:
+
+		<?php
+		sapphire('dev/build');
+		// Do some actions here that have to be executed after dev/build
+
 Executing maintenance commands
 ------------------------------
 
