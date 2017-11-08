@@ -1,3 +1,7 @@
+## ARCHIVED
+
+**This page is no longer relevant**
+
 `sake` - Sapphire Make
 ======================
 
